@@ -98,7 +98,8 @@ var remove_nth_helper = function(n, n2, ns, l) {
     return remove_nth_helper(n, n, fp.tl(ns), l);
   }
   else {
-    return remove_nth_helper(n, fp.sub(n2, 1), fp.tl(ns), fp.append(l, [fp.hd(ns)]));
+    return remove_nth_helper(n, fp.sub(n2, 1), fp.tl(ns), 
+              fp.append(l, [fp.hd(ns)]));
   }
 };
 
@@ -130,7 +131,8 @@ var postorder = function (tree) {
 
 var postorder_helper = function(tree, l) {
   if(!fp.isNull(tree)) {
-	return postorder_helper(left(tree), postorder_helper(right(tree), fp.cons(fp.hd(tree), l)));
+	return postorder_helper(left(tree), postorder_helper(right(tree), 
+          fp.cons(fp.hd(tree), l)));
   }
   return l;
 };
@@ -157,12 +159,10 @@ var removeLeafNodesLessThan = function (n,tree) {
 						removeLeaf_helper(n, right(tree))));
 			}
 			else if(isLeaf(left(tree)) && isLeaf(right(tree))) {
-        if(fp.isNull(removeLeaf_helper(n, left(tree))) && fp.isNull(removeLeaf_helper(n, right(tree)))) {
-          return [fp.cons(fp.hd(tree), fp.cons(			
-            removeLeaf_helper(n, left(tree)),
-            [removeLeaf_helper(n, right(tree))]))];
-        }
-        else if(!fp.isNull(removeLeaf_helper(n, left(tree))) && !fp.isNull(removeLeaf_helper(n, right(tree)))) {
+        if( (fp.isNull(removeLeaf_helper(n, left(tree))) 
+              && fp.isNull(removeLeaf_helper(n, right(tree)))) 
+              || (!fp.isNull(removeLeaf_helper(n, left(tree))) 
+              && !fp.isNull(removeLeaf_helper(n, right(tree)))) ) {
           return [fp.cons(fp.hd(tree), fp.cons(			
             removeLeaf_helper(n, left(tree)),
             [removeLeaf_helper(n, right(tree))]))];
@@ -172,13 +172,8 @@ var removeLeafNodesLessThan = function (n,tree) {
             removeLeaf_helper(n, left(tree)),
             [removeLeaf_helper(n, right(tree))]));
         } 
-        
-        /* return [fp.cons(fp.hd(tree), fp.cons(			
-            removeLeaf_helper(n, left(tree)),
-            [removeLeaf_helper(n, right(tree))]))]; */
 			}
 			else {
-       // console.log(removeLeafNodesLessThan(n, right(tree)));
           return fp.cons(fp.hd(tree), fp.cons(			
             removeLeafNodesLessThan(n, left(tree)),
             removeLeafNodesLessThan(n, right(tree))));
