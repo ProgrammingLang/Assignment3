@@ -130,12 +130,9 @@ var postorder = function (tree) {
 
 var postorder_helper = function(tree, l) {
   if(!fp.isNull(tree)) {
-    postorder_helper(left(tree), l);
-    postorder_helper(right(tree), l);
-    fp.append(l, [fp.hd(tree)]);
-    console.log(fp.append(l, [fp.hd(tree)]));
-    return l;
+	return postorder_helper(left(tree), postorder_helper(right(tree), fp.cons(fp.hd(tree), l)));
   }
+  return l;
 };
 
 ////////// End of ode for problem 5 ////////////////////
@@ -144,9 +141,67 @@ var postorder_helper = function(tree, l) {
 // end comment below
 
 var removeLeafNodesLessThan = function (n,tree) {
-    return 0;
+	if(! fp.isNull(tree)) {
+		if(isLeaf(tree) && fp.isLT(fp.hd(tree), n)) {
+			return [];
+		}
+		else if(!fp.isNull(left(tree)) && !fp.isNull(right(tree))){
+			if(isLeaf(left(tree)) && (!isLeaf(right(tree)))) {
+				return fp.cons(fp.hd(tree), fp.cons(
+						removeLeaf_helper(n, left(tree)),
+						[removeLeafNodesLessThan(n, right(tree))]));
+			}
+			else if(isLeaf(right(tree)) && !isLeaf(left(tree))) {
+				return fp.cons(fp.hd(tree), fp.cons(
+						[removeLeafNodesLessThan(n, left(tree))], 
+						removeLeaf_helper(n, right(tree))));
+			}
+			else if(isLeaf(left(tree)) && isLeaf(right(tree))) {
+				return fp.cons(fp.hd(tree), fp.cons(			
+					removeLeaf_helper(n, left(tree)),
+					[removeLeaf_helper(n, right(tree))]));
+			}
+			else {
+				return fp.cons(fp.hd(tree), fp.cons(			
+					removeLeafNodesLessThan(n, left(tree)),
+					removeLeafNodesLessThan(n, right(tree))));
+			}
+		}
+		else if(!fp.isNull(left(tree)) && fp.isNull(right(tree))){
+			if(isLeaf(left(tree))) {
+				return [fp.cons(fp.hd(tree), fp.cons([],
+						[removeLeaf_helper(n, left(tree))]))];
+			}
+			else if(!isLeaf(left(tree))) {
+				return fp.cons(fp.hd(tree), fp.cons([],
+					[removeLeafNodesLessThan(n, left(tree))]));
+			}
+		}
+		else if(fp.isNull(left(tree)) && !fp.isNull(right(tree))){
+			if(isLeaf(right(tree))) {
+				return [fp.cons(fp.hd(tree), fp.cons([],
+						[removeLeaf_helper(n, right(tree))]))];
+			}
+			else if(!isLeaf(right(tree))) {
+				return fp.cons(fp.hd(tree), fp.cons([], 
+					[removeLeafNodesLessThan(n, right(tree))]));
+			}
+		}
+	}
+	else {
+		return [];
+	}
 };
 
+
+var removeLeaf_helper = function (n, tree) {
+	if(fp.isLT(fp.hd(tree), n)) {
+		return [];
+	}
+	else {
+		return tree;
+	}
+};
 ////////// End of code for problem 6 ////////////////////
 
 
@@ -189,6 +244,9 @@ var tree2 =     [12, [11, [], [] ],
                      [3, [4, [], [] ],
 		         [4, [], [] ]]];
 
+ var tree3 =     [12, [11, [5, [], []], [8, [], [] ]],
+                     [3, [4, [], [] ],
+		         [4, [], [] ]]];
 console.log("Testing Problem 5");
 console.log(postorder(tree1));
 console.log(postorder(tree2));
@@ -199,3 +257,4 @@ console.log("Testing Problem 6");
 console.log(removeLeafNodesLessThan(10, tree1));
 console.log(removeLeafNodesLessThan(4, tree2));
 console.log(removeLeafNodesLessThan(5, tree2));
+console.log(removeLeafNodesLessThan(8, tree3));
