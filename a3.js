@@ -145,11 +145,11 @@ var removeLeafNodesLessThan = function (n,tree) {
 		if(isLeaf(tree) && fp.isLT(fp.hd(tree), n)) {
 			return [];
 		}
-		else if(!fp.isNull(left(tree)) && !fp.isNull(right(tree))){
-			if(isLeaf(left(tree)) && (!isLeaf(right(tree)))) {
+		else if(!fp.isNull(left(tree)) && !fp.isNull(right(tree))){     
+			if(isLeaf(left(tree)) && (!isLeaf(right(tree)))) {       
 				return fp.cons(fp.hd(tree), fp.cons(
 						removeLeaf_helper(n, left(tree)),
-						[removeLeafNodesLessThan(n, right(tree))]));
+						removeLeafNodesLessThan(n, right(tree))));
 			}
 			else if(isLeaf(right(tree)) && !isLeaf(left(tree))) {
 				return fp.cons(fp.hd(tree), fp.cons(
@@ -157,14 +157,31 @@ var removeLeafNodesLessThan = function (n,tree) {
 						removeLeaf_helper(n, right(tree))));
 			}
 			else if(isLeaf(left(tree)) && isLeaf(right(tree))) {
-				return fp.cons(fp.hd(tree), fp.cons(			
-					removeLeaf_helper(n, left(tree)),
-					[removeLeaf_helper(n, right(tree))]));
+        if(fp.isNull(removeLeaf_helper(n, left(tree))) && fp.isNull(removeLeaf_helper(n, right(tree)))) {
+          return [fp.cons(fp.hd(tree), fp.cons(			
+            removeLeaf_helper(n, left(tree)),
+            [removeLeaf_helper(n, right(tree))]))];
+        }
+        else if(!fp.isNull(removeLeaf_helper(n, left(tree))) && !fp.isNull(removeLeaf_helper(n, right(tree)))) {
+          return [fp.cons(fp.hd(tree), fp.cons(			
+            removeLeaf_helper(n, left(tree)),
+            [removeLeaf_helper(n, right(tree))]))];
+        }
+        else {
+          return fp.cons(fp.hd(tree), fp.cons(			
+            removeLeaf_helper(n, left(tree)),
+            [removeLeaf_helper(n, right(tree))]));
+        } 
+        
+        /* return [fp.cons(fp.hd(tree), fp.cons(			
+            removeLeaf_helper(n, left(tree)),
+            [removeLeaf_helper(n, right(tree))]))]; */
 			}
 			else {
-				return fp.cons(fp.hd(tree), fp.cons(			
-					removeLeafNodesLessThan(n, left(tree)),
-					removeLeafNodesLessThan(n, right(tree))));
+       // console.log(removeLeafNodesLessThan(n, right(tree)));
+          return fp.cons(fp.hd(tree), fp.cons(			
+            removeLeafNodesLessThan(n, left(tree)),
+            removeLeafNodesLessThan(n, right(tree))));
 			}
 		}
 		else if(!fp.isNull(left(tree)) && fp.isNull(right(tree))){
@@ -247,6 +264,9 @@ var tree2 =     [12, [11, [], [] ],
  var tree3 =     [12, [11, [5, [], []], [8, [], [] ]],
                      [3, [4, [], [] ],
 		         [4, [], [] ]]];
+ var tree4 =     [12, [11, [8, [], []], [5, [], [] ]],
+                     [3, [4, [], [] ],
+		         [4, [], [] ]]];
 console.log("Testing Problem 5");
 console.log(postorder(tree1));
 console.log(postorder(tree2));
@@ -258,3 +278,4 @@ console.log(removeLeafNodesLessThan(10, tree1));
 console.log(removeLeafNodesLessThan(4, tree2));
 console.log(removeLeafNodesLessThan(5, tree2));
 console.log(removeLeafNodesLessThan(8, tree3));
+console.log(removeLeafNodesLessThan(8, tree4));
